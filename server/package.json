@@ -1,0 +1,38 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Shopping mall API server with Express and MongoDB",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "seed:categories": "node src/scripts/seedCategoryThirty.js",
+    "fix:dedupe": "node src/scripts/dedupeUniqueStyles.js",
+    "fix:names-colors": "node src/scripts/fixNamesAndColors.js",
+    "fix:repair": "node src/scripts/repairCatalogNames.js",
+    "fix:catalog": "npm run fix:names-colors && npm run fix:dedupe && npm run fix:repair",
+    "fix:people-limit": "node src/scripts/limitPeopleImages.js && node src/scripts/replacePeopleOnlyProducts.js",
+    "fix:official-images": "node src/scripts/fixOfficialImagesOnly.js"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "shopping-mall"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.1",
+    "morgan": "^1.11.0",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

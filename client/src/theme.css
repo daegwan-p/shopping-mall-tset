@@ -1,0 +1,29 @@
+@import url("./components/ui/ui.css");
+
+:root {
+  --bg: #faf8f5;
+  --bg-soft: #f2eee7;
+  --surface: #ffffff;
+  --text: #1c1917;
+  --muted: #8d8478;
+  --border: #e4ded3;
+  --divider: #eae4db;
+  --accent: #1c1917;
+  --point: #b4472e;
+  --error: #b4472e;
+  --success: #1c1917;
+  --font: "DM Sans", "Apple SD Gothic Neo", sans-serif;
+  --display: "Instrument Serif", "Times New Roman", serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 18px;
+  --space-5: 26px;
+  --space-6: 36px;
+  --space-7: 56px;
+  --radius: 0;
+  --store-margin: 36px;
+  --admin-margin: 28px;
+  --filter-width: 222px;
+  --summary-width: 372px;
+}
