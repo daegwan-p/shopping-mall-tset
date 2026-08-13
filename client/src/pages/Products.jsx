@@ -15,7 +15,7 @@ import {
 } from "../utils/productDisplay";
 
 const PAGE_SIZE = 12;
-const PRICE_MAX = 5000;
+const PRICE_MAX = 500000;
 
 const sortOptions = [
   { value: "newest", label: "신상품" },
@@ -50,6 +50,7 @@ function Products() {
   const brand = searchParams.get("brand") || "";
   const size = searchParams.get("size") || "";
   const color = searchParams.get("color") || "";
+  const q = searchParams.get("q") || "";
   const maxPrice = Number(searchParams.get("maxPrice") || PRICE_MAX);
 
   const [brands, setBrands] = useState([]);
@@ -73,7 +74,7 @@ function Products() {
       .catch(() => setBrands([]));
   }, []);
 
-  const title = category || "전체 상품";
+  const title = q ? `"${q}" 검색` : category || "전체 상품";
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
@@ -88,6 +89,7 @@ function Products() {
       if (brand) params.brand = brand;
       if (size) params.size = size;
       if (color) params.color = color;
+      if (q) params.q = q;
       if (maxPrice < PRICE_MAX) params.maxPrice = maxPrice;
 
       const data = await getProducts(params);
@@ -104,7 +106,7 @@ function Products() {
     } finally {
       setLoading(false);
     }
-  }, [page, category, sort, brand, size, color, maxPrice]);
+  }, [page, category, sort, brand, size, color, q, maxPrice]);
 
   useEffect(() => {
     loadProducts();
@@ -139,8 +141,8 @@ function Products() {
   };
 
   const breadcrumbCategory = useMemo(
-    () => category || "전체",
-    [category]
+    () => (q ? `"${q}"` : category || "전체"),
+    [category, q]
   );
 
   return (

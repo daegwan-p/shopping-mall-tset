@@ -392,6 +392,12 @@ const updateOrder = async (req, res, next) => {
     ];
 
     const prevStatus = order.status;
+    if (req.body.status === "cancelled" && prevStatus !== "cancelled") {
+      return res.status(400).json({
+        success: false,
+        message: "주문 취소는 취소 버튼을 사용해 주세요. 결제 환불이 함께 처리됩니다.",
+      });
+    }
     allowed.forEach((key) => {
       if (req.body[key] !== undefined) order[key] = req.body[key];
     });

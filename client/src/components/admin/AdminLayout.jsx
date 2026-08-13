@@ -18,7 +18,7 @@ function AdminLayout() {
   const { user, isAdmin } = useAuth();
 
   if (!user || !isAdmin) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace state={{ from: "/admin" }} />;
   }
 
   return (

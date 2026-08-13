@@ -34,14 +34,23 @@ const register = async (req, res, next) => {
   try {
     const { email, password, name, phone } = req.body;
 
-    if (!email || !password || !name) {
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+
+    if (!normalizedEmail || !password || !name) {
       return res.status(400).json({
         success: false,
         message: "email, password, name은 필수입니다.",
       });
     }
 
-    const exists = await User.findOne({ email });
+    if (String(password).length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "비밀번호는 6자 이상이어야 합니다.",
+      });
+    }
+
+    const exists = await User.findOne({ email: normalizedEmail });
     if (exists) {
       return res.status(409).json({
         success: false,
@@ -52,7 +61,7 @@ const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       name,
       phone: phone || "",
@@ -82,14 +91,16 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       return res.status(400).json({
         success: false,
         message: "email과 password는 필수입니다.",
       });
     }
 
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email: normalizedEmail }).select("+password");
 
     if (!user || !user.isActive) {
       return res.status(401).json({

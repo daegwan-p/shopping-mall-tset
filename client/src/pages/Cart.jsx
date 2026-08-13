@@ -34,6 +34,7 @@ function calcCouponDiscount(coupon, itemsTotal) {
 function Cart() {
   const {
     items,
+    ready,
     selectedCount,
     productAmount,
     updateQuantity,
@@ -111,6 +112,17 @@ function Cart() {
       setCouponSaving(false);
     }
   };
+
+  if (!ready) {
+    return (
+      <main className="checkout-flow">
+        <div className="checkout-flow-inner">
+          <Stepper active="cart" />
+          <p className="products-empty">장바구니를 불러오는 중...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -205,7 +217,10 @@ function Cart() {
                         <button
                           type="button"
                           onClick={() =>
-                            updateQuantity(item.key, item.quantity + 1)
+                            updateQuantity(
+                              item.key,
+                              Math.min(item.stock || item.quantity, item.quantity + 1)
+                            )
                           }
                         >
                           +

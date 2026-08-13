@@ -37,7 +37,7 @@ function calcLocalCouponDiscount(coupon, itemsTotal) {
 function Checkout() {
   const navigate = useNavigate();
   const { user, isLoggedIn, updateUser } = useAuth();
-  const { selectedItems, productAmount, refreshCart } = useCart();
+  const { selectedItems, productAmount, refreshCart, ready } = useCart();
   const goingToComplete = useRef(false);
 
   const shippingMethod = "standard";
@@ -140,6 +140,16 @@ function Checkout() {
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace state={{ from: "/checkout" }} />;
+  }
+
+  if (!ready) {
+    return (
+      <main className="checkout-flow">
+        <div className="checkout-flow-inner">
+          <p className="products-empty">장바구니를 불러오는 중...</p>
+        </div>
+      </main>
+    );
   }
 
   if (selectedItems.length === 0 && !goingToComplete.current && !saving) {

@@ -28,7 +28,7 @@ function Home() {
       <section className="service-row">
         <article>
           <h3>전 상품 무료 배송</h3>
-          <p>5만원 이상 주문 시 전국 무료</p>
+          <p>10만원 이상 주문 시 전국 무료</p>
         </article>
         <article>
           <h3>무료 수선</h3>

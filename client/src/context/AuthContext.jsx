@@ -1,4 +1,13 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { getMe } from "../api/auth";
+import { setOnUnauthorized } from "../api/client";
 import { clearAuth, getToken, getUser, saveAuth } from "../utils/authStorage";
 
 const AuthContext = createContext(null);
@@ -18,6 +27,27 @@ export function AuthProvider({ children }) {
     setToken(null);
     setUser(null);
   }, []);
+
+  useEffect(() => {
+    setOnUnauthorized(() => logout());
+    return () => setOnUnauthorized(null);
+  }, [logout]);
+
+  useEffect(() => {
+    if (!token) return undefined;
+    let cancelled = false;
+    getMe()
+      .then((data) => {
+        if (!cancelled && data.user) {
+          saveAuth(token, data.user);
+          setUser(data.user);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [token, logout]);
 
   const updateUser = useCallback((nextUser) => {
     const currentToken = getToken();

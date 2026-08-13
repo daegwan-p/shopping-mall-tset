@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -16,10 +16,13 @@ const NAV_LINKS = [
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAdmin, isLoggedIn, logout } = useAuth();
   const { totalCount } = useCart();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const userMenuRef = useRef(null);
 
   useEffect(() => {
@@ -46,7 +49,24 @@ function Header() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  useEffect(() => {
+    setMobileNavOpen(false);
+    setSearchOpen(false);
+  }, [location.pathname, location.search]);
+
   const closeMobileNav = () => setMobileNavOpen(false);
+
+  const goSearch = (event) => {
+    event?.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) {
+      setSearchOpen(true);
+      return;
+    }
+    closeMobileNav();
+    setSearchOpen(false);
+    navigate(`/products?q=${encodeURIComponent(query)}`);
+  };
 
   const handleLogout = () => {
     logout();
@@ -90,9 +110,21 @@ function Header() {
         </Link>
 
         <div className="nav-actions">
-          <button type="button" className="icon-btn desktop-only" aria-label="검색">
-            <SearchIcon />
-          </button>
+          <form className={`header-search${searchOpen ? " is-open" : ""}`} onSubmit={goSearch}>
+            {searchOpen ? (
+              <input
+                type="search"
+                className="header-search-input"
+                placeholder="상품 검색"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+            ) : null}
+            <button type="submit" className="icon-btn" aria-label="검색">
+              <SearchIcon />
+            </button>
+          </form>
 
           {user ? (
             <div className="user-menu desktop-only" ref={userMenuRef}>
@@ -181,6 +213,16 @@ function Header() {
             </Link>
           ))}
         </div>
+
+        <form className="mobile-nav-search" onSubmit={goSearch}>
+          <input
+            type="search"
+            placeholder="상품 검색"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="submit">검색</button>
+        </form>
 
         <div className="mobile-nav-divider" />
 
